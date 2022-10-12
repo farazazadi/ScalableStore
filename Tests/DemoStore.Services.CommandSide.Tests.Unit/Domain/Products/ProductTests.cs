@@ -23,4 +23,24 @@ public class ProductTests
             .And
             .ContainSingle(domainEvent => domainEvent is NewProductCreatedEvent);
     }
+
+
+    [Fact]
+    public void Product_ShouldActAsExpected_WhenBuyMethodCalled()
+    {
+        // Given
+        var product = Product.Create(
+            "The Feast of the Goat",
+            22.47m,
+            5,
+            "media/images/1.png"
+        );
+
+        // When
+        product.Buy(2);
+
+        // Then
+        var expected = new ProductQuantity(3);
+        product.Quantity.Should().Be(expected);
+    }
 }

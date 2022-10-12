@@ -34,4 +34,6 @@ public sealed class Product : Entity
 
         return product;
     }
+
+    public void Buy(ProductQuantity quantity) => Quantity -= quantity;
 }
