@@ -1,6 +1,7 @@
 using DemoStore.Services.CommandSide.Application;
 using DemoStore.Services.CommandSide.Infrastructure;
 using DemoStore.Services.CommandSide.Infrastructure.Persistence.DbContextInitializer;
+using DemoStore.Services.CommandSide.WebApi.Common.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-app.UseHttpsRedirection();
+app
+    .UseMiddleware<ExceptionHandlingMiddleware>()
+    .UseHttpsRedirection();
 
 app.Run();
