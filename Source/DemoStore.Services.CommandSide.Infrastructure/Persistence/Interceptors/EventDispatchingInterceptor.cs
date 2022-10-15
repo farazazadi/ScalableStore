@@ -2,16 +2,22 @@
 using DemoStore.Services.CommandSide.Domain.Common;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using DemoStore.Services.CommandSide.Infrastructure.Common.Contracts;
+using DemoStore.Services.CommandSide.Infrastructure.IntegrationEvents;
 
 namespace DemoStore.Services.CommandSide.Infrastructure.Persistence.Interceptors;
 
 internal sealed class EventDispatchingInterceptor : SaveChangesInterceptor
 {
     private readonly IEventDispatcher _eventDispatcher;
+    private readonly IMessageBrokerPublisher _messageBrokerPublisher;
 
-    public EventDispatchingInterceptor(IEventDispatcher eventDispatcher)
+    public EventDispatchingInterceptor(
+        IEventDispatcher eventDispatcher,
+        IMessageBrokerPublisher messageBrokerPublisher)
     {
         _eventDispatcher = eventDispatcher;
+        _messageBrokerPublisher = messageBrokerPublisher;
     }
 
     public override async ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
@@ -29,6 +35,13 @@ internal sealed class EventDispatchingInterceptor : SaveChangesInterceptor
             .ToList();
 
         foreach (var domainEvent in domainEvents)
+        {
             await _eventDispatcher.DispatchAsync(domainEvent, token);
+
+            var integrationEvent = domainEvent.ToIntegrationEvent();
+
+            if (integrationEvent is not null)
+                await _messageBrokerPublisher.PublishAsync(integrationEvent);
+        }
     }
 }

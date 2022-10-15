@@ -4,10 +4,10 @@ namespace DemoStore.Services.CommandSide.Domain.Products.Events;
 
 public sealed class NewProductCreatedEvent : DomainEvent
 {
-    private readonly Product _product;
+    public Product Product { get; }
 
     public NewProductCreatedEvent(Product product)
     {
-        _product = product;
+        Product = product;
     }
 }

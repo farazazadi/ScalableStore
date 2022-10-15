@@ -1,8 +1,10 @@
 ﻿using DemoStore.Services.CommandSide.Application.Common.Contracts;
+using DemoStore.Services.CommandSide.Infrastructure.Common.Contracts;
 using DemoStore.Services.CommandSide.Infrastructure.Persistence;
 using DemoStore.Services.CommandSide.Infrastructure.Persistence.DbContextInitializer;
 using DemoStore.Services.CommandSide.Infrastructure.Persistence.Interceptors;
 using DemoStore.Services.CommandSide.Infrastructure.Services;
+using DemoStore.Services.CommandSide.Infrastructure.Services.RabbitMq;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +19,8 @@ public static class DependencyInjection
         AddDbContext(services, configuration);
 
         services
-            .AddScoped<IEventDispatcher, EventDispatcherService>();
+            .AddScoped<IEventDispatcher, EventDispatcherService>()
+            .AddSingleton<IMessageBrokerPublisher, RabbitMqPublisher>();
 
         return services;
     }
