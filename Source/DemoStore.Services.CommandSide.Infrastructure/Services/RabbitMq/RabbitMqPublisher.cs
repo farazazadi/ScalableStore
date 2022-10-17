@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using DemoStore.Services.CommandSide.Infrastructure.Common.Contracts;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
 namespace DemoStore.Services.CommandSide.Infrastructure.Services.RabbitMq;
@@ -12,14 +12,18 @@ internal class RabbitMqPublisher : IMessageBrokerPublisher, IDisposable
     private readonly string _exchangeName;
     private readonly string _routingKey = string.Empty;
 
-    public RabbitMqPublisher(IConfiguration configuration)
+    public RabbitMqPublisher(IOptions<RabbitMqOptions> rabbitMqOptions)
     {
-        var connectionString = configuration.GetConnectionString("RabbitMq");
+        var options = rabbitMqOptions.Value;
 
         var connectionFactory = new ConnectionFactory
         {
-            Uri = new Uri(connectionString),
-            AutomaticRecoveryEnabled = true,
+            HostName = options.HostName,
+            Port = options.Port,
+            UserName = options.UserName,
+            Password = options.Password,
+            VirtualHost = options.VirtualHost,
+            AutomaticRecoveryEnabled = options.AutomaticRecoveryEnabled,
             DispatchConsumersAsync = true
         };
 

@@ -20,7 +20,8 @@ public static class DependencyInjection
 
         services
             .AddScoped<IEventDispatcher, EventDispatcherService>()
-            .AddSingleton<IMessageBrokerPublisher, RabbitMqPublisher>();
+            .AddSingleton<IMessageBrokerPublisher, RabbitMqPublisher>()
+            .Configure<RabbitMqOptions>(configuration.GetSection(RabbitMqOptions.SectionName));
 
         return services;
     }
