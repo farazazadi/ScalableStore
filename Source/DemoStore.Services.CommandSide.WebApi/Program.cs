@@ -1,17 +1,16 @@
 using DemoStore.Services.CommandSide.Application;
 using DemoStore.Services.CommandSide.Infrastructure;
 using DemoStore.Services.CommandSide.Infrastructure.Persistence.DbContextInitializer;
+using DemoStore.Services.CommandSide.WebApi;
 using DemoStore.Services.CommandSide.WebApi.Common.Middleware;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 builder.Services
     .AddApplication()
-    .AddInfrastructure(builder.Configuration);
+    .AddInfrastructure(builder.Configuration)
+    .AddWebApi();
 
 var app = builder.Build();
 
