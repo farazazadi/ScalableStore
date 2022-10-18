@@ -1,6 +1,7 @@
 ﻿using DemoStore.Services.CommandSide.Domain.Common;
 using DemoStore.Services.CommandSide.Domain.Common.ValueObjects;
 using DemoStore.Services.CommandSide.Domain.Products.Events;
+using DemoStore.Services.CommandSide.Domain.Products.Exceptions;
 
 namespace DemoStore.Services.CommandSide.Domain.Products;
 
@@ -35,5 +36,13 @@ public sealed class Product : Entity
         return product;
     }
 
-    public void Buy(ProductQuantity quantity) => Quantity -= quantity;
+    public void Buy(ProductQuantity quantity)
+    {
+        if (quantity > this.Quantity)
+            throw new InsufficientProductQuantityException();
+
+        Quantity -= quantity;
+
+        AddEvent(new ProductBoughtEvent(Id, quantity));
+    }
 }

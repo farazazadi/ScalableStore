@@ -18,6 +18,12 @@ internal static class IntegrationEventExtensions
                 ThumbnailUrl = e.Product.ThumbnailUrl
             },
 
+            ProductBoughtEvent e => new ProductBoughtIntegrationEvent
+            {
+                Id = e.ProductId,
+                Quantity = e.Quantity
+            },
+
             _ => null
         };
     }

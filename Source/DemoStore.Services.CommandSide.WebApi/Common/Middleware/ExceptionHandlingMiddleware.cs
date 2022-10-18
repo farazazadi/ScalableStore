@@ -1,4 +1,6 @@
-﻿using DemoStore.Services.CommandSide.Domain.Common;
+﻿using DemoStore.Services.CommandSide.Application.Common.Exceptions;
+using DemoStore.Services.CommandSide.Domain.Common;
+using ApplicationException = DemoStore.Services.CommandSide.Application.Common.Exceptions.ApplicationException;
 
 namespace DemoStore.Services.CommandSide.WebApi.Common.Middleware;
 
@@ -18,6 +20,10 @@ internal class ExceptionHandlingMiddleware
             await _next(context);
         }
         catch (DomainException exception)
+        {
+            await HandleDomainExceptionAsync(context, exception);
+        }
+        catch (ApplicationException exception)
         {
             await HandleDomainExceptionAsync(context, exception);
         }
@@ -44,6 +50,29 @@ internal class ExceptionHandlingMiddleware
             .ExecuteAsync(context);
     }
 
+
+    private static async Task HandleDomainExceptionAsync(HttpContext context, ApplicationException exception)
+    {
+
+        var extensions = new Dictionary<string, object>
+        {
+            {"exceptionCode", exception.Code}
+        };
+
+
+        var statusCode = StatusCodes.Status400BadRequest;
+
+        if(exception.Code.StartsWith(nameof(EntityNotFoundException<Entity>)))
+            statusCode = StatusCodes.Status404NotFound;
+
+        await Results.Problem(
+                detail: exception.Message,
+                statusCode: statusCode,
+                instance: context.Request.Path,
+                extensions: extensions
+            )
+            .ExecuteAsync(context);
+    }
 
     private static async Task HandleUnexpectedExceptionsAsync(HttpContext context, Exception exception,
         ILogger<ExceptionHandlingMiddleware> logger)

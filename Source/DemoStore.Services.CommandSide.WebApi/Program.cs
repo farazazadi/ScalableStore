@@ -3,6 +3,7 @@ using DemoStore.Services.CommandSide.Infrastructure;
 using DemoStore.Services.CommandSide.Infrastructure.Persistence.DbContextInitializer;
 using DemoStore.Services.CommandSide.WebApi;
 using DemoStore.Services.CommandSide.WebApi.Common.Middleware;
+using DemoStore.Services.CommandSide.WebApi.Products;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,5 +39,7 @@ app.UseStaticFiles(new StaticFileOptions
 app
     .UseMiddleware<ExceptionHandlingMiddleware>()
     .UseHttpsRedirection();
+
+app.MapProductEndpoints();
 
 app.Run();
