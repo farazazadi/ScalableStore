@@ -15,6 +15,9 @@ internal static class Extensions
             nameof(NewProductCreatedIntegrationEvent) =>
                 JsonSerializer.Deserialize<NewProductCreatedIntegrationEvent>(input),
 
+            nameof(ProductBoughtIntegrationEvent) =>
+                JsonSerializer.Deserialize<ProductBoughtIntegrationEvent>(input),
+
             _ => null
         };
     }

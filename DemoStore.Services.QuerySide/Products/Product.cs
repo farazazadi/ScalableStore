@@ -24,4 +24,8 @@ public class Product : IDocument
         ThumbnailUrl = thumbnailUrl;
     }
 
+    public void Buy(int quantity)
+    {
+        Quantity -= quantity;
+    }
 }
