@@ -8,6 +8,8 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MediatR;
 using System.Reflection;
+using DemoStore.Services.QuerySide.Common;
+using DemoStore.Services.QuerySide.Products;
 
 namespace DemoStore.Services.QuerySide.Infrastructure;
 
@@ -18,6 +20,12 @@ public static class DependencyInjection
         services.AddMediatR(Assembly.GetExecutingAssembly());
 
         AddMongoDb(services, configuration);
+
+        services.AddTransient<IRepository<Product>>(provider =>
+        {
+            var mongoDatabase = provider.GetRequiredService<IMongoDatabase>();
+            return new MongoRepository<Product>(mongoDatabase);
+        });
 
         services.Configure<RabbitMqOptions>(configuration.GetSection(RabbitMqOptions.SectionName));
 
@@ -59,6 +67,12 @@ public static class DependencyInjection
             new CamelCaseElementNameConvention(),
             new EnumRepresentationConvention(BsonType.String)
         };
+
+
+        BsonClassMap.RegisterClassMap<Product>(cm =>
+        {
+            cm.AutoMap();
+        });
 
         ConventionRegistry.Register("DemoStore", conventionPack, _ => true);
     }
