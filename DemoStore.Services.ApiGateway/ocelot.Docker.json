@@ -1,0 +1,57 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:8010"
+  },
+
+  "Routes": [
+
+    // CommandSide Routes -------------------------
+    {
+      "UpstreamPathTemplate": "/api/products/{id}/buy",
+      "UpstreamHttpMethod": [ "Put" ],
+
+      "DownstreamPathTemplate": "/api/products/{id}/buy",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "command-side-api",
+          "Port": 80
+        }
+      ]
+    },
+
+    {
+      "UpstreamPathTemplate": "/media/{everything}",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamPathTemplate": "/media/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "command-side-api",
+          "Port": 80
+        }
+      ]
+    },
+    // CommandSide Routes -------------------------
+
+
+    // QuerySide Routes -------------------------
+    {
+      // CommandSide Routes
+      "UpstreamPathTemplate": "/api/products",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamPathTemplate": "/api/products",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "query-side-api",
+          "Port": 80
+        }
+      ]
+    }
+    // QuerySide Routes -------------------------
+
+  ]
+}
