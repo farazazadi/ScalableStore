@@ -1,0 +1,63 @@
+﻿@page "/"
+@using DemoStore.Clients.WebUi.Services
+@using DemoStore.Clients.WebUi.DataTransferObjects
+
+<PageTitle>Products</PageTitle>
+
+@inject ProductService ProductService
+
+<h1>Products</h1>
+
+@if (_products is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>In stock</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var product in _products)
+        {
+            <tr>
+                <td><img src="@GetImageFullPath(product.ThumbnailUrl)" class="img-thumbnail" width="64px" height="100px"></td>
+                <td>@product.Name</td>
+                <td>$@product.Price</td>
+                <td>@product.Quantity</td>
+                <td><button disabled="@(product.Quantity == 0)" class="btn btn-success" @onclick="@(async ()=> await Buy(product, 1))">Buy</button></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IReadOnlyList<ProductDto> _products;
+    private string _baseUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _baseUrl = ProductService.BaseUrl;
+        _products = await ProductService.GetAllAsync();
+    }
+
+    private async Task<BuyProductResultDto> Buy(ProductDto product, int qty)
+    {
+        var result = await ProductService.Buy(product.Id, qty);
+        product.Quantity = result.RemainedQuantity;
+        return result;
+    }
+
+    private string GetImageFullPath(string imageUrl)
+    {
+        return _baseUrl + imageUrl;
+    }
+}
