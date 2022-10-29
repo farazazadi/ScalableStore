@@ -1,0 +1,117 @@
+version: "3.9"
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    networks:
+      - demostore
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 15692:15692
+    volumes: 
+        - rabbitmq:/var/lib/rabbitmq
+  
+  sqlserver2019:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver2019
+    restart: unless-stopped
+    networks:
+      - demostore
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password123456
+    volumes:
+      - sqlserver2019:/apps/mssql/data:/var/lib/mssqlql/data
+  
+  command-side-api:
+    build: ../DemoStore.Services.CommandSide
+    container_name: command-side-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+    restart: unless-stopped
+    networks:
+      - demostore
+    ports:
+      - 8001:80
+    depends_on:
+      - sqlserver2019
+      - rabbitmq
+  
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    restart: unless-stopped
+    networks:
+      - demostore
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb:/data/db
+
+  query-side-api-1:
+    build: ../DemoStore.Services.QuerySide
+    container_name: query-side-api-1
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+    restart: unless-stopped
+    networks:
+      - demostore
+    ports:
+      - 8002:80
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+
+  query-side-api-2:
+    build: ../DemoStore.Services.QuerySide
+    container_name: query-side-api-2
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+    restart: unless-stopped
+    networks:
+      - demostore
+    ports:
+      - 8003:80
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+
+  api-gateway:
+    build: ../DemoStore.Services.ApiGateway
+    container_name: api-gateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+    restart: unless-stopped
+    networks:
+      - demostore
+    ports:
+      - 8010:80
+    depends_on:
+      - command-side-api
+      - query-side-api-1
+      - query-side-api-2
+
+
+networks:
+  demostore:
+    name: demostore-network
+
+volumes:
+  sqlserver2019:
+    driver: local
+  rabbitmq:
+    driver: local
+  mongodb:
+    driver: local

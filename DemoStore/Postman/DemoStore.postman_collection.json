@@ -1,0 +1,122 @@
+{
+	"info": {
+		"_postman_id": "6e0f9d61-8d58-491f-a792-6a9d754447dc",
+		"name": "DemoStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Commands",
+			"item": [
+				{
+					"name": "Buy Product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": \"c6de8d86-b9e7-4371-896d-2e630852a2fa\",\r\n    \"quantity\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8001/api/products/c6de8d86-b9e7-4371-896d-2e630852a2fa/buy",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"products",
+								"c6de8d86-b9e7-4371-896d-2e630852a2fa",
+								"buy"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ApiGateway",
+			"item": [
+				{
+					"name": "Buy Product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": \"4c281de0-c711-451f-93d2-366d27ec129c\",\r\n    \"quantity\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8010/api/products/4c281de0-c711-451f-93d2-366d27ec129c/buy",
+							"host": [
+								"localhost"
+							],
+							"port": "8010",
+							"path": [
+								"api",
+								"products",
+								"4c281de0-c711-451f-93d2-366d27ec129c",
+								"buy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8010/api/products",
+							"host": [
+								"localhost"
+							],
+							"port": "8010",
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Queries",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8002/api/products",
+							"host": [
+								"localhost"
+							],
+							"port": "8002",
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
