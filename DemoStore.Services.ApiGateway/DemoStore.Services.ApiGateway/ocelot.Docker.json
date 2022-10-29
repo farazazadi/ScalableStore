@@ -38,7 +38,6 @@
 
     // QuerySide Routes -------------------------
     {
-      // CommandSide Routes
       "UpstreamPathTemplate": "/api/products",
       "UpstreamHttpMethod": [ "Get" ],
 
@@ -46,10 +45,18 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "query-side-api",
+          "Host": "query-side-api-1",
+          "Port": 80
+        },
+        {
+          "Host": "query-side-api-2",
           "Port": 80
         }
-      ]
+      ],
+
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     }
     // QuerySide Routes -------------------------
 

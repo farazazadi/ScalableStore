@@ -38,7 +38,6 @@
 
     // QuerySide Routes -------------------------
     {
-      // CommandSide Routes
       "UpstreamPathTemplate": "/api/products",
       "UpstreamHttpMethod": [ "Get" ],
 
@@ -48,8 +47,16 @@
         {
           "Host": "localhost",
           "Port": 8002
+        },
+        {
+          "Host": "localhost",
+          "Port": 8003
         }
-      ]
+      ],
+
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     }
     // QuerySide Routes -------------------------
 
